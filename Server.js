@@ -23,9 +23,6 @@ const reset = document.getElementById("reset")
 const text = document.getElementById("current-text")
 
 
-let numbers = []
-numbers.push([one,two,three,four,five,six,seven,eight,nine,zero])
-
 one.addEventListener("click",() => numberFunc(one))
 two.addEventListener("click",() => numberFunc(two))
 three.addEventListener("click",() => numberFunc(three))
@@ -45,7 +42,7 @@ result.addEventListener("click",() => res(previous,func))
 reset.addEventListener("click",() => burn())
 
 
-resultBox = document.getElementById("result-text-box")
+resultBox = document.getElementById("calculations")
 // one.addEventListener("click",() => numberFunc(one))
 let calculations = []
 let previous = 0
@@ -64,32 +61,45 @@ function numberFunc(type) {
 }
 
 function passFunction (type) {
-    if(text.innerHTML != 0){
+    if(text.innerHTML != "0"){
         previous = parseInt(text.innerHTML)
-        text.innerHTML = 0
+        text.innerHTML = "0"
         func = type
         console.log(func)
     }
 }   
 
 function res(previous,type){
-    switch(type) {
-        case "add":
-            output = previous + Number(text.innerHTML);
-            console.log(Number(text.innerHTML))
-        case "sub":
-            output = previous - Number(text.innerHTML);
-        case "div":
-            console.log(previous)
-            output =  previous / Number(text.innerHTML);
-        case "mult":
-            output = previous * Number(text.innerHTML);
+
+    if(type == "add")
+    {
+        output = previous + Number(text.innerHTML);
     }
-    calculations.push(new Calculations(previous,type,parseInt(text.innerHTML),output));
+    else if(type == "sub")
+    {
+        output = previous - Number(text.innerHTML);
+    }
+    else if(type == "div")
+    {
+        output = previous / Number(text.innerHTML);
+    }
+    else if(type == "mult")
+    {
+        output = previous * Number(text.innerHTML);
+    }
+    
+    func = null
+    console.log(output)
+
+    let calc = new Calculations(previous,type,parseInt(text.innerHTML),output)
     text.innerHTML = output;
-    var z = document.createElement('div')
-    z.innerHTML= calculations[0].prev +" "+ calculations[0].func+" " + calculations[0].post+ " = "+calculations[0].result
-    resultBox.appendChild(calculations[0])
+
+    var temp = document.createElement('div');
+    temp.innerHTML = calc.display()
+    console.log(calc)
+    
+    resultBox.prepend(temp)
+    calculations.push(calc);
 }
 
 function burn(){    
@@ -100,11 +110,16 @@ function burn(){
 
 class Calculations{ 
     constructor(previous, type, latest, result) {
+        const funDic = {"add":"+","sub":"-","mult":"*","div":"/"}
         this.pre = previous
-        this.type = type
+        this.type = funDic[type]
         this.post = latest 
         this.result = result
         }
+
+    display(){
+        return this.pre + " " + this.type + " " + this.post + " = "+ this.result;
+    }
     }
 
 
